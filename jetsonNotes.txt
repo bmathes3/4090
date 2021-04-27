@@ -1,0 +1,162 @@
+Turn on Jetson Nano Fan:
+sudo sh -c 'echo 255 > /sys/devices/pwm-fan/target_pwm'
+
+Order Done:
+1) Download basic section
+2) Get Python3.8
+Optional, although recommended) Get virtual environment
+3) Install Pytorch/Torchvision
+4) Get Jupyterlab or Visual Studio Code
+5) Do YoloV5 Prep (takes a while, just repeatedly try to load it
+   and download whatever packages it needs if the requirements.txt
+   doesn't satisfy the needed packages)
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+IMPORTANT:
+If not in Python3.8 virtual environment make sure to use
+python3.8 -m pip to install packages to correct python version
+as YoloV5 did not work correctly with any Python less than 3.8
+(For me anyway)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+Basic:
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get install python3-pip
+python3 -m pip install --upgrade pip
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+FOR YOLOV5 MAKE SURE TO INSTALL EVERYTHING >= PYTHON3.8
+ex) python3.8 -m pip install packagename
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+Install Python 3.8:
+Link: https://linuxize.com/post/how-to-install-python-3-8-on-ubuntu-18-04/
+sudo apt install software-properties-common
+sudo add-apt-repository ppa:deadsnakes/ppa
+sudo apt install python3.8
+python3.8 -m pip install --upgrade pip
+
+Install Virtual Environment:
+python3.8 -m pip install virtualenv
+#python3.8 -m virtualenv -p python3 venv-name
+virtualenv -p /path/to/python/version venv-name
+
+Run Virtual Environment:
+cd venv-name
+source ./bin/activate
+
+Clone Virtual Environment:
+pip freeze > requirements.txt
+#move requirements.txt to new environment
+pip install -r requirements.txt
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+IMPORTANT: Can probably ignore if running Python3.8 since it installs different numpy version
+Make sure to install numpy==1.19.2,
+numpy==1.19.5 WILL CAUSE TORCH AND OTHER PACKAGES TO FAIL
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+IGNORE
+Install Pytorch: (Once pip3 is install, can use 'python3 -m pip install' instead)
+wget https://nvidia.box.com/shared/static/p57jwntv436lfrd78inwl7iml6p13fzh.whl -O torch-1.8.0-cp36-cp36m-linux_aarch64.whl
+sudo apt-get install python3-pip libopenblas-base libopenmpi-dev 
+pip3 install Cython
+pip3 install numpy torch-1.8.0-cp36-cp36m-linux_aarch64.whl
+
+Install Pytorch:
+python3.8 -m pip install numpy torch
+
+Install torchvision:
+sudo apt-get install libjpeg-dev zlib1g-dev libpython3-dev libavcodec-dev libavformat-dev libswscale-dev
+sudo apt-get install libhdf5-dev
+sudo apt-get install python3.8-dev
+git clone --branch v0.9.0 https://github.com/pytorch/vision torchvision
+cd torchvision
+export BUILD_VERSION=0.x.0  # where 0.x.0 is the torchvision version  
+python3.8 setup.py install #can add --user at the end, but don't for virtualenv
+cd ../
+
+
+
+--------------------------------------------------------------------------------
+
+Link: https://github.com/NVIDIA-AI-IOT/jetbot/wiki/Create-SD-Card-Image-From-Scratch
+
+Install Jupyterlab:
+sudo apt install nodejs npm
+sudo pip3 install jupyter jupyterlab
+
+Create New Kernel for Jupyterlab (VirtualEnv Packages):
+python3.8 -m pip install --user ipykernel
+python3.8 -m ipykernel install --user --name=myenv
+#make sure /home/keith/.local/share/jupyter/kernels/venv-name kernel.json
+#has the correct python location (should be the python version/location of the venv)
+#EXTRA:
+source activate myenv
+python -m ipykernel install --user --name myenv --display-name "Python (myenv)"
+
+Output
+Installed kernelspec myenv in /home/user/.local/share/jupyter/kernels/myenv
+
+Remove unwanted kernel on Jupyterlab:
+jupyter kernelspec uninstall unwanted-kernel
+
+Run Jupyterlab: (only run first line if needed)
+export LD_PRELOAD=/usr/lib/aarch64-linux-gnu/libgomp.so.1
+jupyter lab or python -m jupyterlab
+
+Prepare YoloV5: (Might need sudo)
+
+get YoloV5 requirements.txt and do python3.8 -m pip install -r requirements.txt
+where the txt file directory is
+
+python3.8 -m pip install setuptools
+python3.8 -m pip install opencv-python
+python3.8 -m pip install tqdm
+python3.8 -m pip install pyyaml
+python3.8 -m pip install matplotlib
+python3.8 -m pip install seaborn
+python3.8 -m pip install pandas
+
+------------------------------------------------------------------------------------
+For Python3.8 environment:
+
+To fix torchvision install:
+sudo apt-get install python3.8-dev
+sudo apt-get install libhdf5-dev
+
+
+-----------------------------------------------------------------------
+VSCode
+Download arm64 Deb version
+
+Link: https://stackoverflow.com/questions/54106071/how-to-setup-virtual-environment-for-python-in-vs-code
+Possible fix to usee virtualenv:
+Go to File > preferences > Settings.
+
+Click on Workspace settings.
+
+Under Files:Association, in the JSON: Schemas section, you will find Edit in settings.json , click on that.
+
+Update "python.pythonPath": "Your_venv_path/bin/python" under workspace settings. (For Windows): Update "python.pythonPath": "Your_venv_path/Scripts/python.exe" under workspace settings.
+
+Restart VSCode incase if it still doesn't show your venv.
+
+Run VSCode:
+#go into virtualenv then type
+code .
+
+
+Get Jetcam git and follow instrcutions
+python3.8 -m pip install traitlets
+
+--------------------------------------------------------------------------
+RPI HIGH QUALITY CAMERA JETSON NANO 2GB DEVELOPER KIT INFO (Did not work for me though)
+#Download IMX477 Support from NVIDIA (Needed for this specific camera)
+Need Links: 
+https://developer.nvidia.com/embedded/l4t/r32_release_v5.1/r32_release_v5.1/rpi_imx477_support_nano_2gb_32.5.1.tbz2
+
+https://developer.nvidia.com/embedded/downloads#?search=RPi%20IMX477%20Support%20Nano%202GB
+
+#Follow readme instructions
